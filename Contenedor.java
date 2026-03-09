@@ -16,4 +16,20 @@ public class Contenedor {
     public String toString() {
         return "[ID:" + id + " | " + paisOrigen + "]";
     }
+
+    public void setPaisOrigen(String paisOrigen) {
+        this.paisOrigen = paisOrigen;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setMasa(double masa) {
+        this.masa = masa;
+    }
 }
