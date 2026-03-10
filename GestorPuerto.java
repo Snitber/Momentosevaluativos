@@ -16,4 +16,28 @@ public class GestorPuerto {
     public int disponibles() {
         return 10 - cantidadActual;
     }
+
+    public String[] getListaBuques() {
+        return listaBuques;
+    }
+
+    public void setListaBuques(String[] listaBuques) {
+        this.listaBuques = listaBuques;
+    }
+
+    public int getCantidadActual() {
+        return cantidadActual;
+    }
+
+    public void setCantidadActual(int cantidadActual) {
+        this.cantidadActual = cantidadActual;
+    }
+
+    public ZonaAlmacenamiento getZona() {
+        return zona;
+    }
+
+    public void setZona(ZonaAlmacenamiento zona) {
+        this.zona = zona;
+    }
 }
