@@ -1,57 +1,55 @@
 public class ZonaAlmacenamiento {
-    private Contenedor[][] patio = new Contenedor[10][10];
+    private Contenedor[][] matriz = new Contenedor[10][10];
 
-    // Muestra el esquema básico de puestos disponibles 
-    public void dibujarMapa() {
-        System.out.println("\n--- ESTADO DEL PATIO (Fila 0 es la cima, Fila 9 es el suelo) ---");
+    public void dibujarPatio() {
+        System.out.println("\n--- MAPA DE CONTENEDORES (F9=Suelo) ---");
         for (int i = 0; i < 10; i++) {
-            System.out.print("F" + i + " | ");
+            System.out.print("Fila " + i + " | ");
             for (int j = 0; j < 10; j++) {
-                System.out.print(patio[i][j] == null ? "[  ] " : "[XX] ");
+                System.out.print(matriz[i][j] == null ? "[  ] " : "[XX] ");
             }
             System.out.println();
         }
-        System.out.println("      0    1    2    3    4    5    6    7    8    9 (Columnas)");
+        System.out.println("         0    1    2    3    4    5    6    7    8    9 (Cols)");
     }
 
-    public boolean apilarContenedor(int columna, Contenedor c) {
-        // Validación: No deben existir solapamientos [cite: 49]
-        // Se busca desde la fila 9 hasta la 0 para apilar correctamente 
-        for (int fila = 9; fila >= 0; fila--) {
-            if (patio[fila][columna] == null) {
-                patio[fila][columna] = c;
+    public boolean registrarEnColumna(int col, Contenedor c) {
+        // Lógica: busca desde la fila 9 hacia arriba para no dejar vacíos abajo
+        for (int f = 9; f >= 0; f--) {
+            if (matriz[f][col] == null) {
+                matriz[f][col] = c;
                 return true;
             }
         }
-        return false; // Columna llena
+        return false;
     }
 
-    public double obtenerPesoTotal() {
-        double total = 0;
-        for (Contenedor[] fila : patio) {
-            for (Contenedor c : fila) {
-                if (c != null) total += c.getMasa();
-            }
-        }
-        return total;
-    }
-
-    public void listarPorOrigen() {
-        System.out.println("\n--- LISTADO AGRUPADO POR ORIGEN ---");
+    public double calcularPesoTotal() {
+        double suma = 0;
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
-                if (patio[i][j] != null) {
-                    System.out.println("Origen: " + patio[i][j].getPaisOrigen() + " - Pos: [" + i + "][" + j + "]");
+                if (matriz[i][j] != null) suma += matriz[i][j].getPeso();
+            }
+        }
+        return suma;
+    }
+
+    public void reportePorPais() {
+        System.out.println("\n--- INVENTARIO POR ORIGEN ---");
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                if (matriz[i][j] != null) {
+                    System.out.println("ID: " + matriz[i][j].getId() + " | País: " + matriz[i][j].getPais() + " | Ubicación: ["+i+"]["+j+"]");
                 }
             }
         }
     }
 
-    public Contenedor[][] getPatio() {
-        return patio;
+    public Contenedor[][] getMatriz() {
+        return matriz;
     }
 
-    public void setPatio(Contenedor[][] patio) {
-        this.patio = patio;
+    public void setMatriz(Contenedor[][] matriz) {
+        this.matriz = matriz;
     }
 }
