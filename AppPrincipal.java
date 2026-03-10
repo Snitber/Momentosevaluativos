@@ -2,55 +2,65 @@ import java.util.Scanner;
 
 public class AppPrincipal {
     public static void main(String[] args) {
-        GestorPuerto control = new GestorPuerto();
-        Scanner entrada = new Scanner(System.in);
-        int menu = 0;
+        GestorPuerto puerto = new GestorPuerto();
+        try (Scanner sc = new Scanner(System.in)) {
+            var opcion = 0;
 
-        while (menu != 5) {
-            try {
-                System.out.println("\n==== LOGÍSTICA JH - MENÚ PRINCIPAL ====");
-                System.out.println("1. Registro de Buques [Disponibles: " + control.getEspaciosLibresBuques() + "]");
-                System.out.println("2. Ubicar Contenedor");
-                System.out.println("3. Peso Total");
-                System.out.println("4. Listar Orígenes");
+            while (opcion != 5) {
+                System.out.println("\n--- GESTION PORTUARIA JH ---");
+                System.out.println("1. Registrar Buque");
+                System.out.println("2. Registrar Contenedor");
+                System.out.println("3. Ver Peso Total");
+                System.out.println("4. Listar por Origen");
                 System.out.println("5. Salir");
-                System.out.print("Selección: ");
+                System.out.print("Elija una opcion: ");
                 
-                menu = Integer.parseInt(entrada.nextLine());
+                // Usamos una validación simple para la opción
+                if (sc.hasNextInt()) {
+                    opcion = sc.nextInt();
+                    sc.nextLine(); 
 
-                switch (menu) {
-                    case 1 -> {
-                        System.out.print("Nombre del buque: ");
-                        control.registrarEntradaBuque(entrada.nextLine());
-                    }
-                    case 2 -> {
-                        control.patio.dibujarMapa();
+                    if (opcion != 1) if (opcion == 2) {
+                        puerto.zona.dibujarPatio();
                         System.out.print("Columna (0-9): ");
-                        int col = Integer.parseInt(entrada.nextLine());
-                        System.out.print("ID: ");
-                        String id = entrada.nextLine();
-                        System.out.print("País: ");
-                        String pais = entrada.nextLine();
-                        System.out.print("Peso: ");
-                        double p = Double.parseDouble(entrada.nextLine());
+                        int col = sc.nextInt();
+                        sc.nextLine();
                         
-                        if (!control.patio.apilarContenedor(col, new Contenedor(id, pais, p))) {
-                            System.out.println("ADVERTENCIA: Columna llena."); 
+                        System.out.print("ID Contenedor: ");
+                        String id = sc.nextLine();
+                        System.out.print("Pais: ");
+                        String pais = sc.nextLine();
+                        System.out.print("Peso: ");
+                        double peso = sc.nextDouble();
+                        sc.nextLine();
+
+                        if (puerto.zona.registrarEnColumna(col, new Contenedor(id, pais, peso))) {
+                            System.out.println("LOGRADO: Contenedor guardado.");
+                        } else {
+                            System.out.println("ADVERTENCIA: Columna llena.");
                         }
+                    } 
+                    else if (opcion == 3) {
+                        System.out.println("Peso total: " + puerto.zona.calcularPesoTotal() + " Tons.");
+                    } 
+                    else if (opcion == 4) {
+                        puerto.zona.reportePorPais();
+                    } 
+                    else if (opcion == 5) {
+                        System.out.println("Cerrando...");
+                    } 
+                    else {
+                        System.out.print("Nombre del buque: ");
+                        String nombre = sc.nextLine();
+                        puerto.anclarBuque(nombre);
                     }
-                    case 3 -> {
-                        System.out.println("Peso Total: " + control.patio.obtenerPesoTotal()); 
-                    }
-                    case 4 -> {
-                        control.patio.listarPorOrigen();
-                    }
-                    case 5 -> {
-                        System.out.println("Saliendo..."); 
-                    }
+                } else {
+                    System.out.println("Error: Ingrese solo numeros.");
+                    sc.nextLine(); // Limpia el error
                 }
-            } catch (NumberFormatException e) {
-                System.out.println("Error: Ingrese datos válidos."); 
             }
-        }
+            // Esto quita el aviso amarillo del Scanner
+            sc.close();
+        } 
     }
 }
