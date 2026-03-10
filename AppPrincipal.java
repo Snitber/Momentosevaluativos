@@ -1,67 +1,82 @@
 import java.util.Scanner;
 
 public class AppPrincipal {
-    @SuppressWarnings("ConvertToTryWithResources")
-    public static void main(String[] args, int i) {
+    public static void main(String[] args) {
+        // Inicialización de la lógica del puerto
         GestorPuerto puerto = new GestorPuerto();
-        Scanner sc = new Scanner(System.in);
-        int opcion = 0;
+        Scanner teclado = new Scanner(System.in);
+        int seleccion = 0;
 
-        while (opcion != 5) {
-            System.out.println("\n===============================");
-            System.out.println("   SISTEMA PORTUARIO JH");
-            System.out.println("===============================");
-            System.out.println("1. Registrar Buque");
-            System.out.println("2. Registrar Contenedor");
-            System.out.println("3. Ver Peso Total");
-            System.out.println("4. Listar por Origen");
-            System.out.println("5. Salir");
-            System.out.print("Elija una opcion: ");
+        // Bucle que mantiene la app abierta hasta elegir la opción 5 
+        do {
+            System.out.println("\n--- LOGÍSTICA PORTUARIA JH ---");
+            System.out.println("1. Registrar Entrada de Buque");
+            System.out.println("2. Ubicar Contenedor en Patio");
+            System.out.println("3. Consultar Peso Total");
+            System.out.println("4. Listar por País de Origen");
+            System.out.println("5. Finalizar Programa");
+            System.out.print("Elija una opción: ");
             
-            opcion = sc.nextInt();
-            sc.nextLine(); 
+            seleccion = teclado.nextInt();
+            teclado.nextLine(); // Limpiar el buffer
 
-            if (i == 1) {
-                System.out.print("Nombre del buque: ");
-                String b = sc.nextLine();
-                puerto.anclarBuque(b);
-                System.out.println("\n--> ¡PRESIONE ENTER PARA VOLVER AL MENÚ!");
-                sc.nextLine(); // Pausa para que veas el mensaje
+            // Opción 1: Registro de Buques en el array de 10 [cite: 23, 33]
+         
+            if (seleccion == 1) {
+                System.out.print("Nombre o ID del Buque: ");
+                String nombreB = teclado.nextLine();
+                puerto.anclarBuque(nombreB);
             } 
-            else if (opcion == 2) {
+            
+            // Opción 2: Registro de Contenedores en matriz 10x10 [cite: 22, 34, 41]
+            else if (seleccion == 2) {
+                // Mostrar esquema de puestos disponibles antes de ingresar 
                 puerto.zona.dibujarPatio();
-                System.out.print("Columna (0-9): ");
-                int c = sc.nextInt();
-                sc.nextLine();
                 
-                System.out.print("ID: ");
-                String id = sc.nextLine();
-                System.out.print("Pais: ");
-                String p = sc.nextLine();
-                System.out.print("Peso: ");
-                double w = sc.nextDouble();
-                sc.nextLine();
+                System.out.print("¿En qué columna lo apilará? (0-9): ");
+                int col = teclado.nextInt();
+                teclado.nextLine(); 
+                
+                System.out.print("ID del contenedor: ");
+                String idC = teclado.nextLine();
+                System.out.print("País de procedencia: ");
+                String paisC = teclado.nextLine();
+                System.out.print("Peso en Toneladas: ");
+                double pesoC = teclado.nextDouble();
+                teclado.nextLine();
 
-                if (puerto.zona.registrarEnColumna(c, new Contenedor(id, p, w))) {
-                    System.out.println("\n--> OK: Contenedor guardado en la base de la columna " + c);
+                // Lógica para apilar de abajo hacia arriba (no aire) [cite: 24]
+                if (puerto.zona.registrarEnColumna(col, new Contenedor(idC, paisC, pesoC))) {
+                    System.out.println(">>> Contenedor ubicado con éxito.");
                 } else {
-                    System.out.println("\n--> ERROR: No hay espacio arriba.");
+                    // Advertencia si el puesto está ocupado o lleno 
+                    System.out.println(">>> ADVERTENCIA: La columna " + col + " no tiene espacio.");
                 }
-                System.out.println("--> ¡PRESIONE ENTER PARA CONTINUAR!");
-                sc.nextLine();
             } 
-            else if (opcion == 3) {
-                System.out.println("\nRESULTADO: Peso total = " + puerto.zona.calcularPesoTotal() + " Tons.");
-                System.out.println("--> ¡PRESIONE ENTER PARA VOLVER!");
-                sc.nextLine();
+            
+            // Opción 3: Peso total de los contenedores [cite: 35]
+            else if (seleccion == 3) {
+                double total = puerto.zona.calcularPesoTotal();
+                System.out.println(">>> Peso total actual en patio: " + total + " kg.");
             } 
-            else if (opcion == 4) {
+            
+            // Opción 4: Listado agrupado por origen [cite: 36]
+            else if (seleccion == 4) {
+                System.out.println("--- LISTADO DE CONTENEDORES ---");
                 puerto.zona.reportePorPais();
-                System.out.println("\n--> ¡PRESIONE ENTER PARA VOLVER!");
-                sc.nextLine();
             }
-        }
-        System.out.println("Aplicacion cerrada por el usuario.");
-        sc.close();
+            
+            // Opción de salida 
+            else if (seleccion == 5) {
+                System.out.println("Cerrando sistema JH...");
+            }
+            
+            else {
+                System.out.println("Opción no válida.");
+            }
+
+        } while (seleccion != 5);
+        
+        teclado.close(); // Cierre de recurso
     }
 }
